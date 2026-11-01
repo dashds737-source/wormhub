@@ -73,7 +73,11 @@ local function GetCoordinates()
     )
 end
 
-local function MakeLocation(Name, Y)
+
+local DigLocation = nil
+local PanLocation = nil
+
+local function MakeLocation(Name, Y, SaveLocation)
     local Button = Instance.new("TextButton")
     Button.Size = UDim2.fromOffset(125, 34)
     Button.Position = UDim2.fromOffset(10, Y)
@@ -95,31 +99,24 @@ local function MakeLocation(Name, Y)
 
     Button.Activated:Connect(function()
         local Position = GetCoordinates()
-        Coordinate.Text = Position or "Karakter belum siap"
+
+        if Position then
+            SaveLocation(Position)
+            Coordinate.Text = Position
+        else
+            Coordinate.Text = "Karakter belum siap"
+        end
     end)
 end
 
-MakeLocation("Set Location Dig", 48)
-MakeLocation("Set Location Pan", 90)
+MakeLocation("Set Location Dig", 48, function(Position)
+    DigLocation = Position
+end)
 
-local function MakeToggle(Name, Y)
-    local Active = false
-    local Button = Instance.new("TextButton")
+MakeLocation("Set Location Pan", 90, function(Position)
+    PanLocation = Position
+end)
 
-    Button.Size = UDim2.new(1, -20, 0, 36)
-    Button.Position = UDim2.fromOffset(10, Y)
-    Button.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
-    Button.BorderColor3 = Gold
-    Button.TextColor3 = Gold
-    Button.TextSize = 12
-    Button.Text = Name .. " : OFF"
-    Button.Parent = Frame
-
-    Button.Activated:Connect(function()
-        Active = not Active
-        Button.Text = Name .. (Active and " : ON" or " : OFF")
-    end)
-end
 
 MakeToggle("Auto Dig", 135)
 MakeToggle("Auto Pan", 178)
